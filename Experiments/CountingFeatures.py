@@ -1,13 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Apr 27 14:55:43 2025
-
-@author: sebastiangarcia
-"""
-
 # Contador de features basado solo en el texto
-
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 

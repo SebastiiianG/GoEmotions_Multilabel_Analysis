@@ -5,6 +5,8 @@
 
 # Importación de la librería pandas para la manipulación de datos
 import pandas as pd
+from sklearn.preprocessing import MultiLabelBinarizer
+
 
 # ***** CARGA DE DATOS *****
 # Cargar los conjuntos de datos desde archivos TSV (valores separados por tabulaciones)
@@ -81,12 +83,35 @@ print(train_data)
 print(valid_data)
 print(test_data)
 
+#Binarización de las emociones
+mlb = MultiLabelBinarizer(classes=emotion_list)
+mlb.fit(train_data['Emotions']) 
+mlb.fit(valid_data['Emotions'])
+mlb.fit(test_data['Emotions'])
+
+
+# Transformar las emociones en variables binarias (0 o 1) para cada emoción
+# Se crea un nuevo DataFrame con las emociones binarizadas
+# Se eliminan las columnas originales de 'Emotions' y 'List of classes'
+# Se concatenan las columnas originales con las nuevas columnas binarizadas
+# Guardar una copia para conservar la columna 'Emotions'
+train_data_with_emotions = train_data.copy()
+valid_data_with_emotions = valid_data.copy()
+test_data_with_emotions = test_data.copy()
+
+# Binarización y reemplazo
+train_binarized = pd.DataFrame(mlb.transform(train_data_with_emotions['Emotions']), columns=mlb.classes_)
+valid_binarized = pd.DataFrame(mlb.transform(valid_data_with_emotions['Emotions']), columns=mlb.classes_)
+test_binarized = pd.DataFrame(mlb.transform(test_data_with_emotions['Emotions']), columns=mlb.classes_)
+
+train_data = pd.concat([train_data[['Text', 'ID']], train_binarized], axis=1)
+valid_data = pd.concat([valid_data[['Text', 'ID']], valid_binarized], axis=1)
+test_data  = pd.concat([test_data[['Text', 'ID']], test_binarized], axis=1)
 
 # Guardar el archivo de emociones
-# Guardar solo texto y emoción
-train_data[['Text', 'Emotions', 'ID', 'Class']].to_csv('./Data/train_indexado.csv', index=False)
-valid_data[['Text', 'Emotions', 'ID', 'Class']].to_csv('./Data/valid_indexado.csv', index=False)
-test_data[['Text', 'Emotions', 'ID', 'Class']].to_csv('./Data/test_indexado.csv', index=False)
+train_data.to_csv('./Data/train_indexado.csv', index=False)
+valid_data.to_csv('./Data/valid_indexado.csv', index=False)
+test_data.to_csv('./Data/test_indexado.csv', index=False)
 
 print("\nArchivos guardados")
 
