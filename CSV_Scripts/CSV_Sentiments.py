@@ -2,7 +2,7 @@ import pandas as pd
 import ast
 
 # Carga de datos
-train_data = pd.read_csv("./Data/train_indexado.csv")
+train_data = pd.read_csv("./Data/Chi2/train_2000_chi2.csv")
 valid_data = pd.read_csv("./Data/valid_indexado.csv")
 test_data = pd.read_csv("./Data/test_indexado.csv")
 

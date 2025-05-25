@@ -15,6 +15,9 @@ from sklearn.metrics import accuracy_score, classification_report
 train_data = pd.read_csv("./Data/BasedOnEkman/train_ekman.csv")
 test_data = pd.read_csv("./Data/BasedOnEkman/test_ekman.csv")
 
+#Llenar los Textos vacíos con un espacio
+train_data['Text'] = train_data['Text'].fillna(" ")
+
 # Cargar el mapeo de Ekman desde el archivo JSON
 with open("./Data/GoEmotions/ekman_mapping.json", "r") as f:
     ekman_mapping = json.load(f)

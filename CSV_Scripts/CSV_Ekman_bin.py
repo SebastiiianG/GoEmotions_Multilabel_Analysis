@@ -41,50 +41,40 @@ conflict_valid_idx = get_conflicting_indices(valid_data)
 conflict_test_idx  = get_conflicting_indices(test_data)
 
 solo_una_train = len(train_data) - len(conflict_train_idx)
-solo_una_valid = len(valid_data) - len(conflict_valid_idx)
+#solo_una_valid = len(valid_data) - len(conflict_valid_idx)
 solo_una_test  = len(test_data) - len(conflict_test_idx)
 
 print("\nTrain:")
 print("Solo una categoría:", solo_una_train)
 print("Más de una categoría:", len(conflict_train_idx))
 
+"""
 print("\nValidation:")
 print("Solo una categoría:", solo_una_valid)
 print("Más de una categoría:", len(conflict_valid_idx))
-
+"""
 print("\nTest:")
 print("Solo una categoría:", solo_una_test)
 print("Más de una categoría:", len(conflict_test_idx))
 
 # ELIMINAR REGISTROS CON MÁS DE UNA CATEGORÍA EKMAN
 train_data_clean = train_data.drop(index=conflict_train_idx).reset_index(drop=True)
-valid_data_clean = valid_data.drop(index=conflict_valid_idx).reset_index(drop=True)
+#valid_data_clean = valid_data.drop(index=conflict_valid_idx).reset_index(drop=True)
 test_data_clean  = test_data.drop(index=conflict_test_idx).reset_index(drop=True)
 
+# BINARIZACIÓN MULTILABEL (EKMAN)
+mlb = MultiLabelBinarizer(classes=ekman_labels)
+train_ekman = pd.DataFrame(mlb.fit_transform(train_data_clean["Ekman"]), columns=mlb.classes_)
+#valid_ekman = pd.DataFrame(mlb.transform(valid_data_clean["Ekman"]), columns=mlb.classes_)
+test_ekman  = pd.DataFrame(mlb.transform(test_data_clean["Ekman"]),  columns=mlb.classes_)
 
-ekman_to_id = {label: idx for idx, label in enumerate(ekman_labels)}
+# COMBINAR Y GUARDAR 
+train_final = pd.concat([train_data_clean[["Text", "ID"]], train_ekman], axis=1)
+#valid_final = pd.concat([valid_data_clean[["Text", "ID"]], valid_ekman], axis=1)
+test_final  = pd.concat([test_data_clean[["Text", "ID"]], test_ekman], axis=1)
 
-# Categorización usando Ekman
-def categorize_emotions(row):
-    for emotion in row['Ekman']:
-        if emotion in reverse_ekman_map:
-            ekman_category = reverse_ekman_map[emotion]
-            return ekman_to_id[ekman_category]
-    return len(ekman_labels)  # "otros" si no encuentra
+train_final.to_csv("./Data/BasedOnEkman/train_ekman_bin.csv", index=False)
+#valid_final.to_csv("./Data/BasedOnEkman/valid_ekman_bin.csv", index=False)
+test_final.to_csv("./Data/BasedOnEkman/test_ekman_bin.csv", index=False)
 
-train_data_clean['Ekman'] = train_data_clean.apply(categorize_emotions, axis=1)
-valid_data_clean['Ekman'] = valid_data_clean.apply(categorize_emotions, axis=1)
-test_data_clean['Ekman']  = test_data_clean.apply(categorize_emotions, axis=1)
-
-
-#Cambio de nombre de la columa Ekman a Emotion
-train_data_clean.rename(columns={"Ekman": "Emotion"}, inplace=True)
-valid_data_clean.rename(columns={"Ekman": "Emotion"}, inplace=True)
-test_data_clean.rename(columns={"Ekman": "Emotion"}, inplace=True)
-
-# Guardar resultados
-train_data_clean[['Text', 'Emotion', 'ID']].to_csv('./Data/BasedOnEkman/train_ekman.csv', index=False)
-valid_data_clean[['Text', 'Emotion', 'ID']].to_csv('./Data/BasedOnEkman/valid_ekman.csv', index=False)
-test_data_clean[['Text', 'Emotion', 'ID']].to_csv('./Data/BasedOnEkman/test_ekman.csv', index=False)
-
-print("\nArchivos guardados correctamente.")
+print("\nArchivos binarizados y guardados correctamente con emociones de Ekman.")
