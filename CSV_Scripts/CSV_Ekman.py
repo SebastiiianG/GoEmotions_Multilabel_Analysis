@@ -1,6 +1,5 @@
 import pandas as pd
 import json
-from sklearn.preprocessing import MultiLabelBinarizer
 
 # CARGA DE DATOS
 train_data = pd.read_csv("./Data/Chi2/train_2000_chi2.csv")

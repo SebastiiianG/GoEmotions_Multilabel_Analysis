@@ -13,6 +13,9 @@ from sklearn.metrics import accuracy_score, classification_report
 train_data = pd.read_csv("./Data/BasedOnSentiments/train_sentiments.csv")
 test_data = pd.read_csv("./Data/BasedOnSentiments/test_sentiments.csv")
 
+#LLenar los valores NaN con una cadena vacía
+train_data['Text'] = train_data['Text'].fillna(" ")
+
 # --- PREPROCESAMIENTO PARA LEMATIZACIÓN ---
 #nltk.download('punkt')
 #nltk.download('wordnet')
