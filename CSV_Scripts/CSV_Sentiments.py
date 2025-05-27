@@ -1,5 +1,4 @@
 import pandas as pd
-from sklearn.preprocessing import MultiLabelBinarizer
 
 # Carga de datos
 train_data = pd.read_csv("./Data/Chi2/train_2000_chi2.csv")

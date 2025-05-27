@@ -1,51 +1,37 @@
 import pandas as pd
-import ast
+import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.metrics import classification_report, accuracy_score
 from skmultilearn.adapt import MLkNN
 from scipy.sparse import csr_matrix
 
-# === CARGA DE DATOS ===
-train_data = pd.read_csv("./Data/OnlyEmotions/train_emotions.csv")
-test_data = pd.read_csv("./Data/OnlyEmotions/test_emotions.csv")
+# CARGA DE DATOS
+train_data = pd.read_csv("./Data/Chi2/train_2000_chi2.csv")
+test_data = pd.read_csv("./Data/test_indexado.csv")
 
-# Convertir strings de listas a listas reales
+# LLenar los registros vacíos del train
+train_data['Text'] = train_data['Text'].fillna('')
 
-"""
-Ejemplo:
-Antes: "['admiration', 'gratitude']"
-Después: ['admiration', 'gratitude']
-"""
-train_data['Emotions'] = train_data['Emotions'].apply(ast.literal_eval)
-test_data['Emotions'] = test_data['Emotions'].apply(ast.literal_eval)
+
+#Definir las clases de emociones
+emotion_classes = train_data.columns[2:].tolist()
+
 
 # TF-IDF VECTORIZACIÓN
 vectorizer = TfidfVectorizer(lowercase=True, stop_words="english", strip_accents="unicode", max_features=5000)
 X_train = vectorizer.fit_transform(train_data['Text'].values)
 X_test = vectorizer.transform(test_data['Text'].values)
 
-# BINARIZACIÓN MULTILABEL
-emotion_classes = [
-    "admiration", "amusement", "anger", "annoyance", "approval", "caring",
-    "confusion", "curiosity", "desire", "disappointment", "disapproval", "disgust", 
-    "embarrassment", "excitement", "fear", "gratitude", "grief", "joy", "love", 
-    "nervousness", "optimism", "pride", "realization", "relief", "remorse", "sadness", 
-    "surprise", "neutral"
-]
+y_train = np.asarray(train_data[emotion_classes]) 
+y_test = np.asarray(test_data[emotion_classes])
 
-
-mlb = MultiLabelBinarizer(classes=emotion_classes)
-y_train = mlb.fit_transform(train_data['Emotions'])
-y_test = mlb.transform(test_data['Emotions'])
-
-#convertir a matriz dispersa de acuerdo con la documentación de skmultilearn
-y_train_sparse = csr_matrix(y_train)
+#
 
 # MLkNN
 mlknn = MLkNN(k=3)
-mlknn.fit(X_train, y_train_sparse)
+mlknn.fit(X_train, csr_matrix(y_train))
 y_pred = mlknn.predict(X_test)
+
 
 # EVALUACIÓN
 print("\nResultados MLkNN")

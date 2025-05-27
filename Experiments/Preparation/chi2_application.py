@@ -55,7 +55,7 @@ plt.xlabel('Número de Features seleccionadas (k)')
 plt.ylabel('F-measure Macro')
 plt.grid(True)
 plt.tight_layout()
-plt.savefig('./Plots/chi2_f1_macro_curve_scipy.png')
+plt.savefig('./Plots/chi2_aplicacion.png')
 plt.close()
 
 

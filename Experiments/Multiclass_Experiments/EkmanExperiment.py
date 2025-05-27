@@ -90,8 +90,8 @@ def train_and_evaluate(model, X_train, y_train, X_test, y_test, label):
     plot_confusion_matrix(y_test, y_pred, ekman_labels, label)
 
 # --- VECTORIZADORES ---
-vectorizer_raw = TfidfVectorizer(lowercase=True, stop_words="english", strip_accents="unicode", max_features=5000)
-vectorizer_lem = TfidfVectorizer(lowercase=True, stop_words="english", strip_accents="unicode", max_features=5000)
+vectorizer_raw = TfidfVectorizer()
+vectorizer_lem = TfidfVectorizer()
 
 X_train_raw_tfidf = vectorizer_raw.fit_transform(X_train_raw)
 X_test_raw_tfidf = vectorizer_raw.transform(X_test_raw)
