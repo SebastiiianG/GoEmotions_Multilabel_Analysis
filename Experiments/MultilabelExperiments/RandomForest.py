@@ -44,7 +44,7 @@ print("\nResultados Random Forest")
 print("Accuracy:", accuracy_score(y_val, y_pred))
 
 print("\nReporte de clasificación:\n", classification_report(y_val, y_pred, target_names=emotion_classes, zero_division=0))
-
+"""
 param_grid = {
     'estimator__n_estimators': [10, 100, 200, 300],
     'estimator__max_depth': [3, 5, 10, 20, None],
@@ -61,3 +61,4 @@ best_rf= grid_search.best_estimator_
 
 print("\nMejores parámetros encontrados:", grid_search.best_params_)
 print("\nMejor score de validación:", grid_search.best_score_)
+"""

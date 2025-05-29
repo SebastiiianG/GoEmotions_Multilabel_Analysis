@@ -1,7 +1,6 @@
 
 import pandas as pd
 import json
-import nltk
 import re
 from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
