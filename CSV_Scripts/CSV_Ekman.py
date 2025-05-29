@@ -43,17 +43,10 @@ solo_una_train = len(train_data) - len(conflict_train_idx)
 solo_una_valid = len(valid_data) - len(conflict_valid_idx)
 solo_una_test  = len(test_data) - len(conflict_test_idx)
 
-print("\nTrain:")
-print("Solo una categoría:", solo_una_train)
-print("Más de una categoría:", len(conflict_train_idx))
-
-print("\nValidation:")
-print("Solo una categoría:", solo_una_valid)
-print("Más de una categoría:", len(conflict_valid_idx))
-
-print("\nTest:")
-print("Solo una categoría:", solo_una_test)
-print("Más de una categoría:", len(conflict_test_idx))
+print("\nCONTEO DE REGISTROS EKMAN:")
+print("Train - Solo una categoría:", solo_una_train, "| Más de una:", len(conflict_train_idx))
+#print("Valid - Solo una categoría:", solo_una_valid, "| Más de una:", len(conflict_valid_idx))
+print("Test  - Solo una categoría:", solo_una_test,  "| Más de una:", len(conflict_test_idx))
 
 # ELIMINAR REGISTROS CON MÁS DE UNA CATEGORÍA EKMAN
 train_data_clean = train_data.drop(index=conflict_train_idx).reset_index(drop=True)

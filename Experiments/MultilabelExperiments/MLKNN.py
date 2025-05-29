@@ -25,7 +25,6 @@ X_test = vectorizer.transform(test_data['Text'].values)
 y_train = np.asarray(train_data[emotion_classes]) 
 y_test = np.asarray(test_data[emotion_classes])
 
-#
 
 # MLkNN
 mlknn = MLkNN(k=3)
